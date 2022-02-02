@@ -1,0 +1,12 @@
+﻿<Project>
+	<ItemGroup>
+		<CompilerVisibleProperty Include="ApplicationId" />
+		<CompilerVisibleProperty Include="ApplicationTitle"/>
+		<CompilerVisibleProperty Include="RootNamespace"/>
+		<CompilerVisibleProperty Include="TargetFramework"/>
+		<CompilerVisibleProperty Include="_tdrsMauiSplashScreensCount"/>
+	</ItemGroup>
+	<PropertyGroup>
+		<_tdrsMauiSplashScreensCount>@(MauiSplashScreen->Count())</_tdrsMauiSplashScreensCount>
+	</PropertyGroup>
+</Project>
