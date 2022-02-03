@@ -3,7 +3,8 @@
 	<Import Project="..\..\src\DeviceTests.Runners.SourceGen\Generator.props"/>
 	
 	<PropertyGroup>
-		<TargetFrameworks>$(MauiPlatformsNoMacCat)</TargetFrameworks>
+		<TargetFrameworks>net6.0-ios;net6.0-android</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) and '$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks);net6.0-windows10.0.19041</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<SingleProject>true</SingleProject>
 		<RootNamespace>Microsoft.Maui.TestUtils.DeviceTests.Sample</RootNamespace>
