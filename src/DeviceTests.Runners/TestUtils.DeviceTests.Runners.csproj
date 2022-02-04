@@ -11,6 +11,31 @@
 	  <!--<Nullable>enable</Nullable>-->
   </PropertyGroup>
 
+	<PropertyGroup Label="Package">
+		<IsPackable>true</IsPackable>
+		<Version>1.0.0</Version>
+		<VersionSuffix>-preview.1</VersionSuffix>
+		<PackageVersion>$(Version)$(VersionSuffix)</PackageVersion>
+		<PackageId>Maui.TestUtils</PackageId>
+		<Summary>xUnit for MAUI Android, iOS and WinUI 3</Summary>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<RepositoryUrl>https://github.com/anton-yashin/Maui.TestUtils</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/anton-yashin/Maui.TestUtils</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+
+	<ItemGroup Label="Package">
+		<None Include="../../LICENSE" Pack="true" Visible="false" PackagePath="" />
+		<None Include="../../Readme.md" Pack="true" Visible="false" PackagePath="" />
+		<None Include="../DeviceTests.Runners.SourceGen/Maui.TestUtils.props" Pack="true" Visible="false" PackagePath="build" />
+		<None Include="../DeviceTests.Runners.SourceGen/bin/$(Configuration)/netstandard2.0/Microsoft.Maui.TestUtils.DeviceTests.Runners.SourceGen.dll" Pack="true" Visible="false" PackagePath="analyzers/dotnet/cs" />
+	</ItemGroup>
+	
+	<!-- Copy package to folder set by NuGetFolder environment variable if present -->
+	<Target Name="CopyPackage" AfterTargets="Pack" Condition=" '$(NuGetFolder)' != '' ">
+		<Copy SourceFiles="$(OutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(NuGetFolder)" />
+	</Target>
+
   <ItemGroup>
     <EmbeddedResource Include="Assets\credits.html" />
   </ItemGroup>
@@ -19,6 +44,10 @@
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.utility" Version="2.4.1" />
     <PackageReference Include="Microsoft.DotNet.XHarness.TestRunners.Xunit" Version="1.0.0-prerelease.*" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +61,6 @@
     </Compile>
   </ItemGroup>
 
-	<Import Project="SingleProject.targets"/>
+	<Import Project="SingleProject.targets" />
 
 </Project>
