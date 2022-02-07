@@ -1,0 +1,105 @@
+variables:
+  CurrentSemanticVersionBase: '1.0.0'
+  PreviewNumber: $[counter(variables['CurrentSemanticVersionBase'], 1001)]
+  CurrentSemanticVersion: '$(CurrentSemanticVersionBase)-preview.$(PreviewNumber)'
+  NugetPackageVersion: '$(CurrentSemanticVersion)'
+  DotNetSdkVersion: '6.0.200-preview.22055.15'
+  PathToSolution: 'Maui.TestUtils.sln'
+  PathToRunnersCsproj: 'src/DeviceTests.Runners/TestUtils.DeviceTests.Runners.csproj'
+  PathToRunnersSampleCsproj: 'samples/DeviceTests.Sample/TestUtils.DeviceTests.Sample.csproj'
+  MauiCheck.Manifest: 'maui.manifest.json'
+  MauiCheck.Version: '0.10.0'
+
+trigger:
+  branches:
+    include:
+    - main
+    - develop
+  tags:
+    include:
+    - '*'
+  paths:
+    exclude:
+    - README.md
+
+pr:
+  autoCancel: 'true'
+  branches:
+    include:
+    - main
+    - develop
+  paths:
+    exclude:
+    - README.md
+
+jobs:      
+  - job: build_windows
+    displayName: Build Windows Library
+    pool:
+      vmImage: windows-2022
+    steps:
+      - powershell: |
+            wget https://dot.net/v1/dotnet-install.ps1 -OutFile C:\dotnet-install.ps1
+            C:\dotnet-install.ps1 -Version $(DotNetSdkVersion)
+            dotnet --info
+            Write-Host "##vso[task.prependpath]C:\\Users\\VssAdministrator\\AppData\\Local\\Microsoft\\dotnet"
+        displayName: Install .NET $(DotNetSdkVersion)
+      # - task: CmdLine@2
+      #   displayName: 'Install .NET MAUI Workload'
+      #   inputs:
+      #       script : |
+      #         dotnet --info
+      #         dotnet workload install maui --source https://api.nuget.org/v3/index.json --verbosity detailed
+      #         dotnet new globaljson --sdk-version $(DotNetSdkVersion) --force
+      - task: CmdLine@2
+        displayName: 'Install .NET MAUI workload'
+        inputs:
+          script : |
+            dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version) --add-source https://api.nuget.org/v3/index.json
+            maui-check --ci --non-interactive --fix --skip androidemulator --skip xcode --skip vswin --skip vsmac --manifest $(MauiCheck.Manifest)
+      # if this is a tagged build, then update the version number
+      - powershell: |
+          $buildSourceBranch = "$(Build.SourceBranch)"
+          $tagVersion = $buildSourceBranch.Substring($buildSourceBranch.LastIndexOf("/") + 1)
+          Write-Host("Branch = $buildSourceBranch, Version = $tagVersion");
+          Write-Host ("##vso[task.setvariable variable=NugetPackageVersion;]$tagVersion")
+        displayName: Set NuGet Version to Tag Number
+        condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
+      # if this is a PR build, then update the version number
+      - powershell: |
+          $prNumber = $env:System_PullRequest_PullRequestNumber
+          $commitId = "$($env:System_PullRequest_SourceCommitId)".Substring(0, 7)
+          $fullVersionString = "$(CurrentSemanticVersionBase)-build-$prNumber.$(Build.BuildId)+$commitId"
+          Write-Host("GitHub PR = $prNumber, Commit = $commitId");
+          Write-Host ("##vso[task.setvariable variable=NugetPackageVersion;]$fullVersionString")
+          Write-Host "##vso[build.updatebuildnumber]$fullVersionString"
+        displayName: Set NuGet Version to PR Version
+        condition: and(succeeded(), eq(variables['build.reason'], 'PullRequest'))
+      # build, test and pack the packages
+      - task: VSBuild@1
+        displayName: 'Build Maui.TestUtils Sample'
+        inputs:
+          solution: '$(PathToRunnersSampleCsproj)'
+          configuration: 'Release'
+          msbuildArgs: '/restore /p:RunAOTCompilation=false /p:PublishTrimmed=false'
+      - task: VSBuild@1
+        displayName: 'Build and Pack Maui.TestUtils'
+        inputs:
+          solution: '$(PathToRunnersCsproj)'
+          configuration: 'Release'
+          msbuildArgs: '/restore -t:pack -p:PackageVersion=$(NugetPackageVersion) -p:Version=$(NugetPackageVersion) /p:OutputPath=$(Build.ArtifactStagingDirectory)/nuget/ -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg'
+      # publish the packages
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Nuget artifacts'
+        inputs:
+          artifactName: nuget
+          pathToPublish: '$(Build.ArtifactStagingDirectory)/nuget'
+      - task: NuGetCommand@2
+        displayName: 'Publish Nugets packages'
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+        inputs:
+          command: push
+          nuGetFeedType: internal
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/nuget/*.nupkg'
+          publishVstsFeed: Maui.TestUtils/MauiTestutils
+            
