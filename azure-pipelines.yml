@@ -5,7 +5,8 @@ variables:
   NugetPackageVersion: '$(CurrentSemanticVersion)'
   DotNetSdkVersion: '6.0.200-preview.22055.15'
   PathToSolution: 'Maui.TestUtils.sln'
-  PathToRunnersCsproj: 'src/DeviceTests.Runners/TestUtils.DeviceTests.Runners.csproj'
+  PathToRunners: 'src/DeviceTests.Runners'
+  PathToRunnersCsproj: '$(PathToRunners)/TestUtils.DeviceTests.Runners.csproj'
   PathToRunnersSampleCsproj: 'samples/DeviceTests.Sample/TestUtils.DeviceTests.Sample.csproj'
   MauiCheck.Manifest: 'maui.manifest.json'
   MauiCheck.Version: '0.10.0'
@@ -87,8 +88,16 @@ jobs:
         inputs:
           solution: '$(PathToRunnersCsproj)'
           configuration: 'Release'
-          msbuildArgs: '/restore -t:pack -p:PackageVersion=$(NugetPackageVersion) -p:Version=$(NugetPackageVersion) /p:OutputPath=$(Build.ArtifactStagingDirectory)/nuget/ -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg'
+          msbuildArgs: '/restore -t:pack -p:PackageVersion=$(NugetPackageVersion) -p:Version=$(NugetPackageVersion) -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg'
       # publish the packages
+      - task: CopyFiles@2
+        displayName: Collect packages
+        inputs:
+          SourceFolder: '$(PathToRunners)/bin/Release'
+          Contents: |
+            *.nupkg
+            *.snupkg
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Nuget artifacts'
         inputs:
