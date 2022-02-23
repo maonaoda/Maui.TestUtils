@@ -3,7 +3,7 @@ variables:
   PreviewNumber: $[counter(variables['CurrentSemanticVersionBase'], 1001)]
   CurrentSemanticVersion: '$(CurrentSemanticVersionBase)-preview.$(PreviewNumber)'
   NugetPackageVersion: '$(CurrentSemanticVersion)'
-  DotNetSdkVersion: '6.0.200-preview.22055.15'
+  DotNetSdkVersion: '6.0.200'
   PathToSolution: 'Maui.TestUtils.sln'
   PathToRunners: 'src/DeviceTests.Runners'
   PathToRunnersCsproj: '$(PathToRunners)/TestUtils.DeviceTests.Runners.csproj'

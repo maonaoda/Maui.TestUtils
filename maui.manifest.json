@@ -2,7 +2,7 @@
   "check": {
     "toolVersion": "0.10.0",
     "variables": {
-      "DOTNET_SDK_VERSION": "6.0.200-preview.22055.15",
+      "DOTNET_SDK_VERSION": "6.0.200",
       "MAUI_VERSION": "6.0.200-preview.13.2865",
       "MACCATALYST_SDK_VERSION": "15.2.301-preview.13.2",
       "IOS_SDK_VERSION": "15.2.301-preview.13.2",
