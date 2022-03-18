@@ -3,12 +3,12 @@
     "toolVersion": "0.10.0",
     "variables": {
       "DOTNET_SDK_VERSION": "6.0.200",
-      "MAUI_VERSION": "6.0.200-preview.13.2865",
-      "MACCATALYST_SDK_VERSION": "15.2.301-preview.13.2",
-      "IOS_SDK_VERSION": "15.2.301-preview.13.2",
-      "TVOS_SDK_VERSION": "15.2.301-preview.13.2",
-      "MACOS_SDK_VERSION": "12.1.301-preview.13.2",
-      "ANDROID_SDK_VERSION": "31.0.200-preview.13.41",
+      "MAUI_VERSION": "6.0.200-preview.14.5099",
+      "MACCATALYST_SDK_VERSION": "15.2.302-preview.14.117",
+      "IOS_SDK_VERSION": "15.2.302-preview.14.117",
+      "TVOS_SDK_VERSION": "15.2.302-preview.14.117",
+      "MACOS_SDK_VERSION": "12.1.302-preview.14.117",
+      "ANDROID_SDK_VERSION": "31.0.200-preview.14.106",
       "OPENJDK_VERSION": "11.0.10.9"
     },
     "variableMappers": [],
@@ -98,7 +98,7 @@
           ],
           "workloads": [
             {
-              "workloadId": "android-aot",
+              "workloadId": "android",
               "workloadManifestId": "microsoft.net.sdk.android",
               "packageId": "Microsoft.NET.Sdk.Android.Manifest-6.0.200",
               "version": "$(ANDROID_SDK_VERSION)"
