@@ -9,7 +9,6 @@
 		<SingleProject>true</SingleProject>
 		<RootNamespace>Microsoft.Maui.TestUtils.DeviceTests.Sample</RootNamespace>
 		<AssemblyName>Microsoft.Maui.TestUtils.DeviceTests.Sample</AssemblyName>
-		<OutputType Condition="$(TargetFramework.Contains('-windows'))">WinExe</OutputType>
 		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
 		<WindowsPackageType>MSIX</WindowsPackageType>
 		<UseMaui>true</UseMaui>
@@ -19,16 +18,13 @@
 	<PropertyGroup>
 		<ApplicationTitle>Tests Sample</ApplicationTitle>
 		<ApplicationId>com.microsoft.maui.testutils.devicetests</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework.Contains('-windows'))">9A6AAC71-190C-42D2-AC6B-16E3747E412D</ApplicationId>
 		<ApplicationVersion>1</ApplicationVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<MauiIcon Include="Resources\appicon.svg" ForegroundFile="Resources\appiconfg.svg" Color="#512BD4" />
 		<MauiSplashScreen Include="Resources\appiconfg.svg" Color="#512BD4" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,11 +44,5 @@
 		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-windows'))">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$(TargetFramework.Contains('-windows'))">10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
-		<OutputType>WinExe</OutputType>
-		<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
-	</PropertyGroup>
-
 
 </Project>
