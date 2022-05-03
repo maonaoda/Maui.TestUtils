@@ -50,8 +50,15 @@ jobs:
         inputs:
             script : |
               dotnet --info
-              dotnet workload install maui --verbosity detailed --from-rollback-file https://aka.ms/dotnet/maui/rc.1.json --source https://aka.ms/dotnet6/nuget/index.json --source https://api.nuget.org/v3/index.json
+              dotnet workload install maui --verbosity detailed --source https://api.nuget.org/v3/index.json
               dotnet new globaljson --sdk-version $(DotNetSdkVersion) --force
+      # - task: CmdLine@2
+      #   displayName: 'Install .NET MAUI Workload'
+      #   inputs:
+      #       script : |
+      #         dotnet --info
+      #         dotnet workload install maui --verbosity detailed --from-rollback-file https://aka.ms/dotnet/maui/rc.2.json --source https://aka.ms/dotnet6/nuget/index.json --source https://api.nuget.org/v3/index.json
+      #         dotnet new globaljson --sdk-version $(DotNetSdkVersion) --force
       # - task: CmdLine@2
       #   displayName: 'Install .NET MAUI workload'
       #   inputs:
