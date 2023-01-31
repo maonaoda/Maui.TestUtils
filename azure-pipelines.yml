@@ -39,19 +39,19 @@ jobs:
     pool:
       vmImage: windows-2022
     steps:
-      - powershell: |
-            wget https://dot.net/v1/dotnet-install.ps1 -OutFile C:\dotnet-install.ps1
-            C:\dotnet-install.ps1 -Version $(DotNetSdkVersion)
-            dotnet --info
-            Write-Host "##vso[task.prependpath]C:\\Users\\VssAdministrator\\AppData\\Local\\Microsoft\\dotnet"
-        displayName: Install .NET $(DotNetSdkVersion)
+      # - powershell: |
+      #       wget https://dot.net/v1/dotnet-install.ps1 -OutFile C:\dotnet-install.ps1
+      #       C:\dotnet-install.ps1 -Version $(DotNetSdkVersion)
+      #       dotnet --info
+      #       Write-Host "##vso[task.prependpath]C:\\Users\\VssAdministrator\\AppData\\Local\\Microsoft\\dotnet"
+      #   displayName: Install .NET $(DotNetSdkVersion)
       - task: CmdLine@2
         displayName: 'Install .NET MAUI Workload'
         inputs:
             script : |
               dotnet --info
-              dotnet workload install maui --verbosity detailed --source https://api.nuget.org/v3/index.json
-              dotnet new globaljson --sdk-version $(DotNetSdkVersion) --force
+#              dotnet workload install maui --verbosity detailed --source https://api.nuget.org/v3/index.json
+#              dotnet new globaljson --sdk-version $(DotNetSdkVersion) --force
       # - task: CmdLine@2
       #   displayName: 'Install .NET MAUI Workload'
       #   inputs:
