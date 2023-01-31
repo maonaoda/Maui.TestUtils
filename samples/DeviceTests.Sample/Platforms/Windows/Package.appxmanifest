@@ -14,7 +14,7 @@
   <Properties>
     <DisplayName>Tests Sample</DisplayName>
     <PublisherDisplayName>Microsoft</PublisherDisplayName>
-	<Logo>appiconStoreLogo.png</Logo>
+    <Logo>appiconStoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>

@@ -25,13 +25,17 @@ namespace Microsoft.Maui.TestUtils.DeviceTests.Runners.SourceGen
 			context.Log($"RootNamespace: {rootNamespace}");
 			RootNamespace = rootNamespace ?? "TestRunnerNamespace";
 
-			if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property._tdrsMauiSplashScreensCount", out var mauiSplashScreensCount)
-				&& int.TryParse(mauiSplashScreensCount, out var mssc) && mssc > 0)
-            {
-				ContainsSplashScreen = true;
+			ContainsSplashScreen = false;
+			foreach (var file in context.AdditionalFiles)
+			{
+				var options = context.AnalyzerConfigOptions.GetOptions(file);
+				if (options.TryGetValue("build_metadata.AdditionalFiles.IsMauiSplashScreen", out var isMauiSplashScreen) && bool.TryParse(isMauiSplashScreen, out var isSplash) && isSplash)
+				{
+					ContainsSplashScreen = true;
+					break;
+				}
 			}
-
-			context.Log($"HaveMauiSplashScreen: {mauiSplashScreensCount}");
+			context.Log($"ContainsSplashScreen: {ContainsSplashScreen}");
 		}
 
 		public GeneratorExecutionContext Context { get; }
@@ -113,6 +117,7 @@ namespace " + RootNamespace + @"
 {
 	[global::Android.App.Activity(
 		" + splash + @"
+		Theme = ""@style/Maui.SplashTheme"",
 		MainLauncher = true,
 		ConfigurationChanges =
 			global::Android.Content.PM.ConfigChanges.ScreenSize |
@@ -145,7 +150,7 @@ namespace " + RootNamespace + @"
 {
 	[global::Android.App.Activity(
 		Name = """ + ApplicationId + "." + headlessActivityName + @""",
-		Theme = ""@style/Theme.MaterialComponents"",
+		Theme = ""@style/Maui.MainTheme.NoActionBar"",
 		ConfigurationChanges =
 			global::Android.Content.PM.ConfigChanges.ScreenSize |
 			global::Android.Content.PM.ConfigChanges.Orientation |
