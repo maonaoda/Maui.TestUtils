@@ -18,8 +18,6 @@ namespace Microsoft.Maui.TestUtils.DeviceTests.Runners
 					s_services = MauiTestInstrumentation.Current?.Services ?? MauiApplication.Current.Services;
 #elif __IOS__
 					s_services = MauiTestApplicationDelegate.Current?.Services ?? MauiUIApplicationDelegate.Current.Services;
-#elif WINDOWS
-					s_services = MauiWinUIApplication.Current.Services;
 #endif
 				}
 

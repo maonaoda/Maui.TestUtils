@@ -28,7 +28,7 @@ namespace Microsoft.Maui.TestUtils.DeviceTests.Runners
 				{
 #if __ANDROID__
 					s_platformWindow = MauiTestInstrumentation.Current?.CurrentExecutionContext as PlatformView;
-#elif __IOS__
+#elif IOS
 					s_platformWindow = MauiTestApplicationDelegate.Current?.Window;
 #endif
 				}
